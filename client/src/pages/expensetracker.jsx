@@ -33,7 +33,7 @@ function ExpenseTracker() {
     .toFixed(2);
 
   return (
-      <div className='bg-white h-screen flex flex-col items-center text-center text-blue-500'>
+      <div className='bg-white h-screen flex flex-col items-center text-center text-blue-900'>
         <h1 className='text-3xl my-2'>Expense Tracker</h1>
 
         <div>
@@ -45,7 +45,7 @@ function ExpenseTracker() {
 
           {/* Transaction History */}
           <div className='w-80 h-auto py-5 text-center'>
-            <h2 className='px-30 py-4 w-full border-b-2 border-blue-500'>History</h2>
+            <h2 className='px-30 py-4 w-full border-b-2 border-blue-900'>History</h2>
               <ul className='my-2'>
                 {transaction.map((transactionItem) => (
                   <li className={`flex justify-between bg-white drop-shadow-md m-4 p-3 border-r-4 ${transactionItem.amount < 0 ? 'border-red-600' : 'border-green-500'}`} key={transactionItem.id}>
@@ -73,14 +73,14 @@ function ExpenseTracker() {
 
         {/* Add New Transaction */}
         <div className='w-84'>
-            <h3 className='border-b-2 border-blue-500 text-center pb-3 mb-3'>Add New Transaction</h3>
-            <form onSubmit={onSubmit} className='border-2 border-blue-500 px-5 py-5 mb-5'>
+            <h3 className='border-b-2 border-blue-900 text-center pb-3 mb-3'>Add New Transaction</h3>
+            <form onSubmit={onSubmit} className='border-2 border-blue-900 px-5 py-5 mb-5'>
                 <h4>Expense</h4>
-                <input type="text" value={text} onChange={(e) => setText(e.target.value)} className='border-2 border-blue-500 my-3 p-2' placeholder='Expense' />
+                <input type="text" value={text} onChange={(e) => setText(e.target.value)} className='border-2 border-blue-900 my-3 p-2' placeholder='Expense' />
                 <h4>Amount</h4>
-                <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} className='border-2 border-blue-500 my-3 p-2' placeholder='Enter Amount' />
+                <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} className='border-2 border-blue-900 my-3 p-2' placeholder='Enter Amount' />
                 <div></div>
-                <input type="submit" className='p-3 mt-2 bg-blue-500 text-white hover:bg-blue-700' />
+                <input type="submit" className='p-3 mt-2 bg-blue-900 text-white hover:bg-blue-800' />
             </form>
         </div>
         

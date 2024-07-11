@@ -14,10 +14,10 @@ function Home() {
       <p className='w-100 md:w-[800px] text-xl text-center my-4'>Welcome to Tairos Productivity App. In this app, you can make to do lists and expense tracker. To do lists tab will help you list your to do list for your daily life. Expense Tracker tab will help you track your daily expense by managing your income and expense.</p>
       <div className='flex'>
         <div className='mx-4 my-5'>
-          <Link className='p-3 border border-blue-900 text-blue-900 rounded-full hover:bg-blue-900 hover:text-white'>Go to To Do Lists Tab</Link>
+          <Link to="/todolists" className='p-3 border border-blue-900 text-blue-900 rounded-full hover:bg-blue-900 hover:text-white'>Go to To Do Lists Tab</Link>
         </div>
         <div className='mx-4 my-5'>
-          <Link className='p-3 border border-blue-900 text-blue-900 rounded-full hover:bg-blue-900 hover:text-white'>Go to Expense Tracker Tab</Link>
+          <Link to="/expensetracker" className='p-3 border border-blue-900 text-blue-900 rounded-full hover:bg-blue-900 hover:text-white'>Go to Expense Tracker Tab</Link>
         </div>
       </div>
     </motion.div>
