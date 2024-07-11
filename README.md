@@ -1,0 +1,1 @@
+In this app, you can make to do lists and expense tracker. To do lists tab will help you list your to do list for your daily life. Expense Tracker tab will help you track your daily expense by managing your income and expense.
