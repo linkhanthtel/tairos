@@ -23,18 +23,14 @@ LifeTrack is a powerful and intuitive application designed to help you organize 
 - 📋 To-Do List
   - 🆕 Create, edit, and delete tasks
   - 🏷️ Categorize tasks with custom labels
-  - 🔔 Set reminders and due dates
   - ✅ Mark tasks as complete
-  - 🔄 Recurring task options
 
 - 💰 Expense Tracker
   - 📊 Track income and expenses
   - 🏷️ Categorize transactions
   - 📈 View spending trends and reports
-  - 🎯 Set and monitor budget goals
-  - 💱 Multi-currency support
 
-- 🌟 General Features
+- 🌟 General Features (In Process...)
   - 🔐 Secure user authentication
   - 🔄 Real-time data synchronization
   - 📱 Responsive design for all devices
