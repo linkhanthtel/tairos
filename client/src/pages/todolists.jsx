@@ -1126,7 +1126,7 @@ export default function FuturisticTodoList() {
         transition={{ duration: 0.5 }}
         className="z-10 bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-lg shadow-xl p-6 w-full max-w-md absolute bottom-4"
       >
-        <h1 className="text-3xl font-bold mb-4 text-white text-center">Futuristic AI To-Do</h1>
+        <h1 className="text-3xl font-bold mb-4 text-white text-center">To Do Lists</h1>
 
         <div className="flex mb-4">
           <input
@@ -1145,7 +1145,7 @@ export default function FuturisticTodoList() {
             disabled={isAnalyzing}
           >
             <FaPlus className="mr-2" size={18} />
-            {isAnalyzing ? "Analyzing..." : "Add"}
+            {isAnalyzing ? "Adding..." : "Add"}
           </motion.button>
         </div>
 
