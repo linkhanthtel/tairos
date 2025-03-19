@@ -1,5 +1,10 @@
 {
   "dependencies": {
-    "@huggingface/inference": "^3.5.2"
+    "@huggingface/inference": "^3.5.2",
+    "@react-three/drei": "^9.122.0",
+    "@react-three/fiber": "^8.18.0",
+    "lucide-react": "^0.483.0",
+    "react-three": "^0.9.7",
+    "three": "^0.174.0"
   }
 }
