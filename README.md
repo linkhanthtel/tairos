@@ -15,7 +15,7 @@
 
 ## 📱 About The Project
 
-Tairos is a powerful and intuitive application designed to help you organize your daily tasks and manage your finances effortlessly. With separate tabs for to-do lists and expense tracking, Tairos provides a comprehensive solution for personal productivity and financial management. [Backend features and databases are implementing in process]
+Tairos is a powerful and intuitive application designed to help you organize your daily tasks and manage your finances effortlessly. With separate tabs for to-do lists and expense tracking, Tairos provides a comprehensive solution for personal productivity and financial management. [Backend features and databases are implementing in process] [AI features will soon be integrated]
 
 ### ✨ Features
 
