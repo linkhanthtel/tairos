@@ -23,7 +23,6 @@ import {
   FaRegChartBar,
   FaRegCreditCard,
   FaRegMoneyBillAlt,
-  FaRegFileAlt,
   FaRegClipboard,
   FaRegLightbulb,
   FaTimes,
@@ -162,7 +161,7 @@ const ParticleBackground = ({ isDarkMode }) => {
     }
   }, [isDarkMode])
 
-  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ pointerEvents: "none" }} />
+  return <canvas ref={canvasRef} className="fixed inset-0 w-full h-full" style={{ pointerEvents: "none" }} />
 }
 
 // Enhanced card component with 3D effect
@@ -205,7 +204,7 @@ const Card3D = ({ to, color, icon, title, description, onClick }) => {
         rotateY: springRotateY,
         transformStyle: "preserve-3d",
       }}
-      className={`${color} bg-opacity-80 p-6 rounded-lg text-white hover:bg-opacity-90 transition-all duration-300 shadow-lg h-full`}
+      className={`${color} bg-opacity-80 p-6 rounded-lg text-white hover:bg-opacity-90 transition-all duration-300 shadow-lg h-full cursor-pointer`}
     >
       <div style={{ transform: "translateZ(20px)" }}>
         {icon}
@@ -526,9 +525,9 @@ const RecentActivity = ({ activities }) => {
 // Weather Widget Component
 const WeatherWidget = () => {
   const [weather, setWeather] = useState({
-    temp: 72,
+    temp: 32,
     condition: "Sunny",
-    location: "San Francisco",
+    location: "Singapore",
     icon: "☀️",
   })
 
@@ -541,7 +540,7 @@ const WeatherWidget = () => {
       <div className="flex items-center justify-between">
         <div>
           <div className="text-xs text-white text-opacity-80">{weather.location}</div>
-          <div className="text-2xl font-bold">{weather.temp}°F</div>
+          <div className="text-2xl font-bold">{weather.temp}°C</div>
           <div className="text-sm">{weather.condition}</div>
         </div>
         <div className="text-4xl">{weather.icon}</div>
@@ -775,13 +774,13 @@ export default function EnhancedHome() {
     <div
       className={`min-h-screen ${
         isDarkMode ? "bg-gradient-to-br from-slate-900 to-blue-900" : "bg-gradient-to-br from-blue-50 to-indigo-100"
-      } flex flex-col p-4 relative overflow-hidden`}
+      } relative overflow-hidden`}
     >
       {/* Enhanced animated background */}
       <ParticleBackground isDarkMode={isDarkMode} />
 
       {/* Animated gradient blobs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
         {[...Array(3)].map((_, i) => (
           <motion.div
             key={i}
@@ -808,248 +807,223 @@ export default function EnhancedHome() {
         ))}
       </div>
 
-      {/* Header */}
-      <header className="relative z-10 flex justify-between items-center mb-6">
-        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
-          <h1 className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-800"}`}>Tairos</h1>
-          <p className={`${isDarkMode ? "text-blue-200" : "text-gray-600"}`}>Your personal productivity dashboard</p>
-        </motion.div>
+      {/* Main Content Container - Adjusted for sidebar */}
+      <div className="ml-0 md:ml-72 min-h-screen">
+        {/* Header - Adjusted positioning */}
+        <header className="relative z-10 flex justify-between items-center p-6 pb-4">
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
+            <h1 className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-800"}`}>Dashboard</h1>
+            <p className={`${isDarkMode ? "text-blue-200" : "text-gray-600"}`}>
+              Welcome back! Here's your productivity overview
+            </p>
+          </motion.div>
 
-        <div className="flex items-center space-x-3">
-          {/* Search */}
-          <div className="relative">
-            <AnimatePresence>
-              {isSearching ? (
-                <motion.div
-                  initial={{ width: 40, opacity: 0 }}
-                  animate={{ width: 200, opacity: 1 }}
-                  exit={{ width: 40, opacity: 0 }}
-                  className="flex items-center"
-                >
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search..."
-                    className={`w-full py-2 px-3 pl-9 rounded-full ${
-                      isDarkMode
-                        ? "bg-white bg-opacity-10 text-white placeholder-blue-200"
-                        : "bg-white text-gray-800 placeholder-gray-400"
-                    } focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                    autoFocus
-                  />
-                  <button
-                    onClick={() => {
-                      setIsSearching(false)
-                      setSearchQuery("")
-                    }}
-                    className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${
-                      isDarkMode ? "text-white" : "text-gray-600"
-                    }`}
+          <div className="flex items-center space-x-3">
+            {/* Search */}
+            <div className="relative">
+              <AnimatePresence>
+                {isSearching ? (
+                  <motion.div
+                    initial={{ width: 40, opacity: 0 }}
+                    animate={{ width: 200, opacity: 1 }}
+                    exit={{ width: 40, opacity: 0 }}
+                    className="flex items-center"
                   >
-                    <FaTimes size={14} />
-                  </button>
-                </motion.div>
-              ) : (
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => setIsSearching(true)}
-                  className={`p-2 rounded-full ${
-                    isDarkMode
-                      ? "bg-white bg-opacity-10 text-white hover:bg-opacity-20"
-                      : "bg-white text-gray-600 hover:bg-gray-100"
-                  } shadow-md`}
-                >
-                  <FaSearch />
-                </motion.button>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* Notifications */}
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className={`p-2 rounded-full ${
-              isDarkMode
-                ? "bg-white bg-opacity-10 text-white hover:bg-opacity-20"
-                : "bg-white text-gray-600 hover:bg-gray-100"
-            } shadow-md relative`}
-          >
-            <FaRegBell />
-            <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
-          </motion.button>
-
-          {/* Theme Toggle */}
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={() => setIsDarkMode(!isDarkMode)}
-            className={`p-2 rounded-full ${
-              isDarkMode
-                ? "bg-white bg-opacity-10 text-white hover:bg-opacity-20"
-                : "bg-white text-gray-600 hover:bg-gray-100"
-            } shadow-md`}
-          >
-            {isDarkMode ? <FaRegSun /> : <FaRegMoon />}
-          </motion.button>
-
-          {/* User */}
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className={`p-2 rounded-full ${
-              isDarkMode
-                ? "bg-white bg-opacity-10 text-white hover:bg-opacity-20"
-                : "bg-white text-gray-600 hover:bg-gray-100"
-            } shadow-md`}
-          >
-            <FaRegUser />
-          </motion.button>
-        </div>
-      </header>
-
-      {/* Navigation Tabs */}
-      <div className="relative z-10 mb-6">
-        <div className="flex space-x-2 overflow-x-auto pb-2 custom-scrollbar-x">
-          {[
-            { id: "dashboard", label: "Dashboard", icon: <FaRegChartBar /> },
-            { id: "tasks", label: "Tasks", icon: <FaListUl /> },
-            { id: "calendar", label: "Calendar", icon: <FaRegCalendarAlt /> },
-            { id: "expenses", label: "Expenses", icon: <FaRegMoneyBillAlt /> },
-            { id: "reports", label: "Reports", icon: <FaRegFileAlt /> },
-          ].map((tab) => (
-            <motion.button
-              key={tab.id}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 rounded-lg flex items-center ${
-                activeTab === tab.id
-                  ? isDarkMode
-                    ? "bg-blue-600 text-white"
-                    : "bg-indigo-600 text-white"
-                  : isDarkMode
-                    ? "bg-white bg-opacity-10 text-white hover:bg-opacity-20"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-              } shadow-md`}
-            >
-              <span className="mr-2">{tab.icon}</span>
-              {tab.label}
-            </motion.button>
-          ))}
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="relative z-10 flex-1"
-      >
-        {/* Dashboard Stats */}
-        <div className="mb-6">
-          <DashboardStats />
-        </div>
-
-        {/* Quick Actions */}
-        <div className="mb-6">
-          <h2 className={`text-xl font-semibold mb-3 ${isDarkMode ? "text-white" : "text-gray-800"}`}>Quick Actions</h2>
-          <QuickActions />
-        </div>
-
-        {/* Main Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Main Feature Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card3D
-                to="/todolists"
-                color={isDarkMode ? "bg-blue-700" : "bg-blue-600"}
-                icon={<FaListUl className="text-4xl mb-4" />}
-                title="To-Do Lists"
-                description="Organize your tasks and boost your productivity"
-              />
-              <Card3D
-                to="/calendar"
-                color={isDarkMode ? "bg-purple-700" : "bg-purple-600"}
-                icon={<FaCalendarAlt className="text-4xl mb-4" />}
-                title="Calendar"
-                description="Schedule your events and manage your time effectively"
-              />
-              <Card3D
-                to="/expensetracker"
-                color={isDarkMode ? "bg-green-700" : "bg-green-600"}
-                icon={<FaChartLine className="text-4xl mb-4" />}
-                title="Expense Tracker"
-                description="Monitor your finances and make informed decisions"
-              />
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search..."
+                      className={`w-full py-2 px-3 pl-9 rounded-full ${
+                        isDarkMode
+                          ? "bg-white bg-opacity-10 text-white placeholder-blue-200"
+                          : "bg-white text-gray-800 placeholder-gray-400"
+                      } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                      autoFocus
+                    />
+                    <button
+                      onClick={() => {
+                        setIsSearching(false)
+                        setSearchQuery("")
+                      }}
+                      className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${
+                        isDarkMode ? "text-white" : "text-gray-600"
+                      }`}
+                    >
+                      <FaTimes size={14} />
+                    </button>
+                  </motion.div>
+                ) : (
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setIsSearching(true)}
+                    className={`p-2 rounded-full ${
+                      isDarkMode
+                        ? "bg-white bg-opacity-10 text-white hover:bg-opacity-20"
+                        : "bg-white text-gray-600 hover:bg-gray-100"
+                    } shadow-md`}
+                  >
+                    <FaSearch />
+                  </motion.button>
+                )}
+              </AnimatePresence>
             </div>
 
-            {/* Productivity Tip */}
-            <motion.div
-              className={`${
-                isDarkMode ? "bg-yellow-500 bg-opacity-20" : "bg-yellow-100"
-              } p-6 rounded-lg backdrop-filter backdrop-blur-sm border ${
-                isDarkMode ? "border-yellow-500 border-opacity-20" : "border-yellow-200"
-              }`}
-              initial={{ x: -1000 }}
-              animate={{ x: 0 }}
-              transition={{ delay: 0.6, type: "spring", stiffness: 70 }}
+            {/* Notifications */}
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className={`p-2 rounded-full ${
+                isDarkMode
+                  ? "bg-white bg-opacity-10 text-white hover:bg-opacity-20"
+                  : "bg-white text-gray-600 hover:bg-gray-100"
+              } shadow-md relative`}
             >
-              <div className="flex items-center mb-4">
-                <div
-                  className={`w-10 h-10 rounded-full ${
-                    isDarkMode ? "bg-yellow-500 bg-opacity-30" : "bg-yellow-200"
-                  } flex items-center justify-center mr-3`}
-                >
-                  <FaLightbulb className="text-yellow-500 text-xl" />
-                </div>
-                <h3 className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-gray-800"}`}>
-                  Productivity Tip
-                </h3>
+              <FaRegBell />
+              <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+            </motion.button>
+
+            {/* Theme Toggle */}
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              className={`p-2 rounded-full ${
+                isDarkMode
+                  ? "bg-white bg-opacity-10 text-white hover:bg-opacity-20"
+                  : "bg-white text-gray-600 hover:bg-gray-100"
+              } shadow-md`}
+            >
+              {isDarkMode ? <FaRegSun /> : <FaRegMoon />}
+            </motion.button>
+
+            {/* User */}
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className={`p-2 rounded-full ${
+                isDarkMode
+                  ? "bg-white bg-opacity-10 text-white hover:bg-opacity-20"
+                  : "bg-white text-gray-600 hover:bg-gray-100"
+              } shadow-md`}
+            >
+              <FaRegUser />
+            </motion.button>
+          </div>
+        </header>
+
+        {/* Main Content - Adjusted padding */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="relative z-10 px-6 pb-6"
+        >
+          {/* Dashboard Stats */}
+          <div className="mb-6">
+            <DashboardStats />
+          </div>
+
+          {/* Quick Actions */}
+          <div className="mb-6">
+            <h2 className={`text-xl font-semibold mb-3 ${isDarkMode ? "text-white" : "text-gray-800"}`}>
+              Quick Actions
+            </h2>
+            <QuickActions />
+          </div>
+
+          {/* Main Grid Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Left Column */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Main Feature Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card3D
+                  to="/todolists"
+                  color={isDarkMode ? "bg-blue-700" : "bg-blue-600"}
+                  icon={<FaListUl className="text-4xl mb-4" />}
+                  title="To-Do Lists"
+                  description="Organize your tasks and boost your productivity"
+                />
+                <Card3D
+                  to="/calendar"
+                  color={isDarkMode ? "bg-purple-700" : "bg-purple-600"}
+                  icon={<FaCalendarAlt className="text-4xl mb-4" />}
+                  title="Calendar"
+                  description="Schedule your events and manage your time effectively"
+                />
+                <Card3D
+                  to="/expensetracker"
+                  color={isDarkMode ? "bg-green-700" : "bg-green-600"}
+                  icon={<FaChartLine className="text-4xl mb-4" />}
+                  title="Expense Tracker"
+                  description="Monitor your finances and make informed decisions"
+                />
               </div>
-              <p className={`${isDarkMode ? "text-blue-100" : "text-gray-700"} mb-4`}>{tip}</p>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={generateTip}
-                className="bg-yellow-500 text-white px-4 py-2 rounded-full font-semibold hover:bg-yellow-400 transition-colors duration-300 shadow-lg"
+
+              {/* Productivity Tip */}
+              <motion.div
+                className={`${
+                  isDarkMode ? "bg-yellow-500 bg-opacity-20" : "bg-yellow-100"
+                } p-6 rounded-lg backdrop-filter backdrop-blur-sm border ${
+                  isDarkMode ? "border-yellow-500 border-opacity-20" : "border-yellow-200"
+                }`}
+                initial={{ x: -1000 }}
+                animate={{ x: 0 }}
+                transition={{ delay: 0.6, type: "spring", stiffness: 70 }}
               >
-                New Tip
-              </motion.button>
-            </motion.div>
+                <div className="flex items-center mb-4">
+                  <div
+                    className={`w-10 h-10 rounded-full ${
+                      isDarkMode ? "bg-yellow-500 bg-opacity-30" : "bg-yellow-200"
+                    } flex items-center justify-center mr-3`}
+                  >
+                    <FaLightbulb className="text-yellow-500 text-xl" />
+                  </div>
+                  <h3 className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-gray-800"}`}>
+                    Productivity Tip
+                  </h3>
+                </div>
+                <p className={`${isDarkMode ? "text-blue-100" : "text-gray-700"} mb-4`}>{tip}</p>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={generateTip}
+                  className="bg-yellow-500 text-white px-4 py-2 rounded-full font-semibold hover:bg-yellow-400 transition-colors duration-300 shadow-lg"
+                >
+                  New Tip
+                </motion.button>
+              </motion.div>
 
-            {/* Recent Activity */}
-            <RecentActivity activities={activities} />
+              {/* Recent Activity */}
+              <RecentActivity activities={activities} />
+            </div>
+
+            {/* Right Column */}
+            <div className="space-y-6">
+              {/* Weather Widget */}
+              <WeatherWidget />
+
+              {/* Mini Calendar */}
+              <MiniCalendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+
+              {/* Today's Tasks */}
+              <TodoList
+                tasks={filteredTasks}
+                onToggleTask={handleToggleTask}
+                onDeleteTask={handleDeleteTask}
+                onEditTask={handleEditTask}
+              />
+
+              {/* Expense Summary */}
+              <ExpenseSummary expenses={expenses} />
+            </div>
           </div>
+        </motion.div>
+      </div>
 
-          {/* Right Column */}
-          <div className="space-y-6">
-            {/* Weather Widget */}
-            <WeatherWidget />
-
-            {/* Mini Calendar */}
-            <MiniCalendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
-
-            {/* Today's Tasks */}
-            <TodoList
-              tasks={filteredTasks}
-              onToggleTask={handleToggleTask}
-              onDeleteTask={handleDeleteTask}
-              onEditTask={handleEditTask}
-            />
-
-            {/* Expense Summary */}
-            <ExpenseSummary expenses={expenses} />
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Quick Add Button */}
+      {/* Quick Add Button - Adjusted position for sidebar */}
       <motion.div
         initial={{ opacity: 0, scale: 0 }}
         animate={{ opacity: 1, scale: 1 }}
