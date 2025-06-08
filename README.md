@@ -4,7 +4,6 @@
   # Tairos
 
   [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
-  [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
   [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
   Streamline your life with our all-in-one task management and financial tracking app!
@@ -13,11 +12,11 @@
 
 </div>
 
-## 📱 About The Project
+## About The Project
 
 Tairos is a powerful and intuitive application designed to help you organize your daily tasks and manage your finances effortlessly. With separate tabs for to-do lists and expense tracking, Tairos provides a comprehensive solution for personal productivity and financial management. [Backend features and databases are implementing in process] [AI features will soon be integrated]
 
-### ✨ Features
+### Features
 
 - 📋 To-Do List
   - 🆕 Create, edit, and delete tasks
@@ -35,7 +34,7 @@ Tairos is a powerful and intuitive application designed to help you organize you
   - 📱 Responsive design for all devices
   - 📊 Data visualization with charts
 
-## 🚀 Getting Started
+## Getting Started
 
 To get a local copy up and running, follow these simple steps.
 
