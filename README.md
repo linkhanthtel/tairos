@@ -19,20 +19,20 @@ Tairos is a powerful and intuitive application designed to help you organize you
 ### Features
 
 - 📋 To-Do List
-  - 🆕 Create, edit, and delete tasks
-  - 🏷️ Categorize tasks with custom labels
-  - ✅ Mark tasks as complete
+  - Create, edit, and delete tasks
+  - Categorize tasks with custom labels
+  - Mark tasks as complete
 
-- 💰 Expense Tracker
-  - 📊 Track income and expenses
-  - 🏷️ Categorize transactions
-  - 📈 View spending trends and reports
+- Expense Tracker
+  - Track income and expenses
+  - Categorize transactions
+  - View spending trends and reports
 
-- 🌟 General Features (In Process...)
-  - 📝 Interactive Note Taking
-  - 🔐 Secure user authentication
-  - 📱 Responsive design for all devices
-  - 📊 Data visualization with charts
+- General Features (In Process...)
+  - Interactive Note Taking
+  - Secure user authentication
+  - Responsive design for all devices
+  - Data visualization with charts
 
 ## Getting Started
 
