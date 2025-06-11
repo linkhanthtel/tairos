@@ -130,7 +130,7 @@ const ParticleCanvas = ({ width, height, mousePosition }) => {
     <canvas
       ref={canvasRef}
       style={{
-        position: "absolute",
+        position: "fixed",
         top: 0,
         left: 0,
         width: `${width}px`,
@@ -809,183 +809,189 @@ export default function TrelloTodoList() {
   }
 
   return (
-    <div className="h-screen w-full bg-gradient-to-br from-slate-950 to-blue-950 flex flex-col overflow-hidden">
+    <div className="min-h-screen w-full bg-gradient-to-br from-slate-950 to-blue-950 relative overflow-hidden">
       {/* Particle background */}
       <ParticleCanvas width={windowSize.width} height={windowSize.height} mousePosition={mousePosition} />
 
-      {/* Header */}
-      <div className="p-4 flex justify-between items-center text-center z-10 border-b border-gray-800">
-        <h1 className="text-2xl font-bold text-white"></h1>
-
-        <div className="flex items-center gap-3">
-          {/* Search bar */}
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search tasks..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-64 py-2 px-3 pl-9 bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={14} />
-            {searchTerm && (
-              <button
-                onClick={() => setSearchTerm("")}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
-              >
-                <FaTimes size={14} />
-              </button>
-            )}
+      {/* Main Content Container - Adjusted for sidebar */}
+      <div className="ml-0 md:ml-72 min-h-screen flex flex-col">
+        {/* Header - Adjusted positioning */}
+        <div className="p-6 pb-4 flex justify-between items-center z-10 border-b border-gray-800">
+          <div>
+            <h1 className="text-2xl font-bold text-white">Task Board</h1>
+            <p className="text-gray-400 text-sm">Manage your tasks with drag & drop functionality</p>
           </div>
 
-          {/* Filter button */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setShowFilters(!showFilters)}
-            className={`p-2 rounded-lg flex items-center ${showFilters ? "bg-blue-600 text-white" : "bg-gray-800 text-gray-300"}`}
-          >
-            <FaFilter size={14} className="mr-2" />
-            Filters
-          </motion.button>
-        </div>
-      </div>
-
-      {/* Filter panel */}
-      <AnimatePresence>
-        {showFilters && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="border-b border-gray-800 bg-gray-900 bg-opacity-70 backdrop-filter backdrop-blur-sm z-10"
-          >
-            <div className="p-4 flex items-center gap-6">
-              <div>
-                <h3 className="text-sm font-medium text-gray-400 mb-2">Priority</h3>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setFilterPriority("all")}
-                    className={`px-3 py-1 text-xs rounded-full ${filterPriority === "all" ? "bg-blue-600 text-white" : "bg-gray-800 text-gray-300"}`}
-                  >
-                    All
-                  </button>
-                  <button
-                    onClick={() => setFilterPriority("urgent")}
-                    className={`px-3 py-1 text-xs rounded-full ${filterPriority === "urgent" ? "bg-red-600 text-white" : "bg-gray-800 text-gray-300"}`}
-                  >
-                    Urgent
-                  </button>
-                  <button
-                    onClick={() => setFilterPriority("important")}
-                    className={`px-3 py-1 text-xs rounded-full ${filterPriority === "important" ? "bg-yellow-600 text-white" : "bg-gray-800 text-gray-300"}`}
-                  >
-                    Important
-                  </button>
-                  <button
-                    onClick={() => setFilterPriority("normal")}
-                    className={`px-3 py-1 text-xs rounded-full ${filterPriority === "normal" ? "bg-green-600 text-white" : "bg-gray-800 text-gray-300"}`}
-                  >
-                    Normal
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-medium text-gray-400 mb-2">Complexity</h3>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setFilterComplexity("all")}
-                    className={`px-3 py-1 text-xs rounded-full ${filterComplexity === "all" ? "bg-blue-600 text-white" : "bg-gray-800 text-gray-300"}`}
-                  >
-                    All
-                  </button>
-                  <button
-                    onClick={() => setFilterComplexity("quick")}
-                    className={`px-3 py-1 text-xs rounded-full ${filterComplexity === "quick" ? "bg-green-600 text-white" : "bg-gray-800 text-gray-300"}`}
-                  >
-                    Quick
-                  </button>
-                  <button
-                    onClick={() => setFilterComplexity("medium")}
-                    className={`px-3 py-1 text-xs rounded-full ${filterComplexity === "medium" ? "bg-yellow-600 text-white" : "bg-gray-800 text-gray-300"}`}
-                  >
-                    Medium
-                  </button>
-                  <button
-                    onClick={() => setFilterComplexity("complex")}
-                    className={`px-3 py-1 text-xs rounded-full ${filterComplexity === "complex" ? "bg-red-600 text-white" : "bg-gray-800 text-gray-300"}`}
-                  >
-                    Complex
-                  </button>
-                </div>
-              </div>
+          <div className="flex items-center gap-3">
+            {/* Search bar */}
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search tasks..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-64 py-2 px-3 pl-9 bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={14} />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm("")}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+                >
+                  <FaTimes size={14} />
+                </button>
+              )}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
-      {/* Board */}
-      <div className="flex-1 overflow-x-auto p-4">
-        <div className="flex gap-4 h-full">
-          <Column
-            title="To Do"
-            tasks={filteredColumns.todo}
-            columnId="todo"
-            onAddTask={handleAddTask}
-            onEditTask={handleEditTask}
-            onDeleteTask={handleDeleteTask}
-            onMoveTask={handleMoveTask}
-            onProgressUpdate={handleProgressUpdate}
-            color={columnColors.todo}
-          />
-          <Column
-            title="In Progress"
-            tasks={filteredColumns.inProgress}
-            columnId="inProgress"
-            onAddTask={handleAddTask}
-            onEditTask={handleEditTask}
-            onDeleteTask={handleDeleteTask}
-            onMoveTask={handleMoveTask}
-            onProgressUpdate={handleProgressUpdate}
-            color={columnColors.inProgress}
-          />
-          <Column
-            title="Review"
-            tasks={filteredColumns.review}
-            columnId="review"
-            onAddTask={handleAddTask}
-            onEditTask={handleEditTask}
-            onDeleteTask={handleDeleteTask}
-            onMoveTask={handleMoveTask}
-            onProgressUpdate={handleProgressUpdate}
-            color={columnColors.review}
-          />
-          <Column
-            title="Done"
-            tasks={filteredColumns.done}
-            columnId="done"
-            onAddTask={handleAddTask}
-            onEditTask={handleEditTask}
-            onDeleteTask={handleDeleteTask}
-            onMoveTask={handleMoveTask}
-            onProgressUpdate={handleProgressUpdate}
-            color={columnColors.done}
-          />
+            {/* Filter button */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setShowFilters(!showFilters)}
+              className={`p-2 rounded-lg flex items-center ${showFilters ? "bg-blue-600 text-white" : "bg-gray-800 text-gray-300"}`}
+            >
+              <FaFilter size={14} className="mr-2" />
+              Filters
+            </motion.button>
+          </div>
         </div>
-      </div>
 
-      {/* Stats footer */}
-      <div className="p-3 border-t border-gray-800 bg-gray-900 bg-opacity-70 backdrop-filter backdrop-blur-sm z-10">
-        <div className="flex justify-between text-xs text-gray-400">
-          <span>Total: {Object.values(columns).flat().length} tasks</span>
-          <span>To Do: {columns.todo.length}</span>
-          <span>In Progress: {columns.inProgress.length}</span>
-          <span>Review: {columns.review.length}</span>
-          <span>Done: {columns.done.length}</span>
-          <span>
-            Completion: {Math.round((columns.done.length / Object.values(columns).flat().length) * 100) || 0}%
-          </span>
+        {/* Filter panel */}
+        <AnimatePresence>
+          {showFilters && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="border-b border-gray-800 bg-gray-900 bg-opacity-70 backdrop-filter backdrop-blur-sm z-10"
+            >
+              <div className="p-6 flex items-center gap-6">
+                <div>
+                  <h3 className="text-sm font-medium text-gray-400 mb-2">Priority</h3>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setFilterPriority("all")}
+                      className={`px-3 py-1 text-xs rounded-full ${filterPriority === "all" ? "bg-blue-600 text-white" : "bg-gray-800 text-gray-300"}`}
+                    >
+                      All
+                    </button>
+                    <button
+                      onClick={() => setFilterPriority("urgent")}
+                      className={`px-3 py-1 text-xs rounded-full ${filterPriority === "urgent" ? "bg-red-600 text-white" : "bg-gray-800 text-gray-300"}`}
+                    >
+                      Urgent
+                    </button>
+                    <button
+                      onClick={() => setFilterPriority("important")}
+                      className={`px-3 py-1 text-xs rounded-full ${filterPriority === "important" ? "bg-yellow-600 text-white" : "bg-gray-800 text-gray-300"}`}
+                    >
+                      Important
+                    </button>
+                    <button
+                      onClick={() => setFilterPriority("normal")}
+                      className={`px-3 py-1 text-xs rounded-full ${filterPriority === "normal" ? "bg-green-600 text-white" : "bg-gray-800 text-gray-300"}`}
+                    >
+                      Normal
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-medium text-gray-400 mb-2">Complexity</h3>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setFilterComplexity("all")}
+                      className={`px-3 py-1 text-xs rounded-full ${filterComplexity === "all" ? "bg-blue-600 text-white" : "bg-gray-800 text-gray-300"}`}
+                    >
+                      All
+                    </button>
+                    <button
+                      onClick={() => setFilterComplexity("quick")}
+                      className={`px-3 py-1 text-xs rounded-full ${filterComplexity === "quick" ? "bg-green-600 text-white" : "bg-gray-800 text-gray-300"}`}
+                    >
+                      Quick
+                    </button>
+                    <button
+                      onClick={() => setFilterComplexity("medium")}
+                      className={`px-3 py-1 text-xs rounded-full ${filterComplexity === "medium" ? "bg-yellow-600 text-white" : "bg-gray-800 text-gray-300"}`}
+                    >
+                      Medium
+                    </button>
+                    <button
+                      onClick={() => setFilterComplexity("complex")}
+                      className={`px-3 py-1 text-xs rounded-full ${filterComplexity === "complex" ? "bg-red-600 text-white" : "bg-gray-800 text-gray-300"}`}
+                    >
+                      Complex
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Board - Adjusted padding */}
+        <div className="flex-1 overflow-x-auto p-6">
+          <div className="flex gap-4 h-full min-h-[calc(100vh-200px)]">
+            <Column
+              title="To Do"
+              tasks={filteredColumns.todo}
+              columnId="todo"
+              onAddTask={handleAddTask}
+              onEditTask={handleEditTask}
+              onDeleteTask={handleDeleteTask}
+              onMoveTask={handleMoveTask}
+              onProgressUpdate={handleProgressUpdate}
+              color={columnColors.todo}
+            />
+            <Column
+              title="In Progress"
+              tasks={filteredColumns.inProgress}
+              columnId="inProgress"
+              onAddTask={handleAddTask}
+              onEditTask={handleEditTask}
+              onDeleteTask={handleDeleteTask}
+              onMoveTask={handleMoveTask}
+              onProgressUpdate={handleProgressUpdate}
+              color={columnColors.inProgress}
+            />
+            <Column
+              title="Review"
+              tasks={filteredColumns.review}
+              columnId="review"
+              onAddTask={handleAddTask}
+              onEditTask={handleEditTask}
+              onDeleteTask={handleDeleteTask}
+              onMoveTask={handleMoveTask}
+              onProgressUpdate={handleProgressUpdate}
+              color={columnColors.review}
+            />
+            <Column
+              title="Done"
+              tasks={filteredColumns.done}
+              columnId="done"
+              onAddTask={handleAddTask}
+              onEditTask={handleEditTask}
+              onDeleteTask={handleDeleteTask}
+              onMoveTask={handleMoveTask}
+              onProgressUpdate={handleProgressUpdate}
+              color={columnColors.done}
+            />
+          </div>
+        </div>
+
+        {/* Stats footer - Adjusted padding */}
+        <div className="p-6 pt-3 border-t border-gray-800 bg-gray-900 bg-opacity-70 backdrop-filter backdrop-blur-sm z-10">
+          <div className="flex justify-between text-xs text-gray-400">
+            <span>Total: {Object.values(columns).flat().length} tasks</span>
+            <span>To Do: {columns.todo.length}</span>
+            <span>In Progress: {columns.inProgress.length}</span>
+            <span>Review: {columns.review.length}</span>
+            <span>Done: {columns.done.length}</span>
+            <span>
+              Completion: {Math.round((columns.done.length / Object.values(columns).flat().length) * 100) || 0}%
+            </span>
+          </div>
         </div>
       </div>
     </div>
