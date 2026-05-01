@@ -15,6 +15,7 @@ import {
   FaChevronUp,
   FaRegClock,
 } from "react-icons/fa"
+import { IS_DEMO_BUILD } from "../config.js"
 
 // Enhanced particle system with interactive effects
 const ParticleCanvas = ({ width, height, mousePosition }) => {
@@ -819,7 +820,11 @@ export default function TrelloTodoList() {
         <div className="p-6 pb-4 flex justify-between items-center z-10 border-b border-gray-800">
           <div>
             <h1 className="text-2xl font-bold text-white">Task Board</h1>
-            <p className="text-gray-400 text-sm">Manage your tasks with drag & drop functionality</p>
+            <p className="text-gray-400 text-sm">
+              {IS_DEMO_BUILD
+                ? "Demo board — drag & drop and columns work in-browser; no team sync."
+                : "Manage your tasks with drag & drop functionality"}
+            </p>
           </div>
 
           <div className="flex items-center gap-3">

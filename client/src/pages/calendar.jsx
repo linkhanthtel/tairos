@@ -4,6 +4,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css"
 import { format, parse, startOfWeek, getDay, addMinutes, isSameDay } from "date-fns"
 import enUS from "date-fns/locale/en-US"
 import { motion, AnimatePresence, useAnimation, useMotionValue, useTransform, useSpring } from "framer-motion"
+import { IS_DEMO_BUILD } from "../config.js"
 import {
   FaPlus,
   FaTrash,
@@ -426,7 +427,7 @@ const FuturisticTimeIndicator = () => {
 
   return (
     <motion.div
-      className="absolute top-4 right-4 bg-black bg-opacity-40 backdrop-filter backdrop-blur-md rounded-lg p-3 text-cyan-400 font-mono flex items-center z-20"
+      className={`absolute ${IS_DEMO_BUILD ? "top-14" : "top-4"} right-4 bg-black bg-opacity-40 backdrop-filter backdrop-blur-md rounded-lg p-3 text-cyan-400 font-mono flex items-center z-20`}
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.5 }}
@@ -1228,7 +1229,7 @@ const Calendar = () => {
         <motion.button
           whileHover={{ scale: 1.1, backgroundColor: "rgba(6, 182, 212, 0.3)" }}
           whileTap={{ scale: 0.95 }}
-          className="absolute top-4 right-20 z-20 p-3 rounded-full bg-black bg-opacity-40 backdrop-filter backdrop-blur-md text-cyan-400"
+          className={`absolute ${IS_DEMO_BUILD ? "top-14" : "top-4"} right-20 z-20 p-3 rounded-full bg-black bg-opacity-40 backdrop-filter backdrop-blur-md text-cyan-400`}
           onClick={() => setIsDarkMode(!isDarkMode)}
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -1251,7 +1252,9 @@ const Calendar = () => {
             Tairos Calendar
           </h1>
           <p className="text-cyan-300 max-w-2xl mx-auto opacity-80">
-            Navigate time and space with our advanced holographic calendar interface
+            {IS_DEMO_BUILD
+              ? "Demo calendar with sample events — scheduling UX preview only."
+              : "Navigate time and space with our advanced holographic calendar interface"}
           </p>
         </motion.div>
 

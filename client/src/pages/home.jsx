@@ -28,6 +28,7 @@ import {
   FaTimes,
 } from "react-icons/fa"
 import { format, addDays, startOfWeek, addWeeks, isSameDay } from "date-fns"
+import { IS_DEMO_BUILD } from "../config.js"
 
 // Productivity tips
 const productivityTips = [
@@ -814,7 +815,9 @@ export default function EnhancedHome() {
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
             <h1 className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-800"}`}>Dashboard</h1>
             <p className={`${isDarkMode ? "text-blue-200" : "text-gray-600"}`}>
-              Welcome back! Here's your productivity overview
+              {IS_DEMO_BUILD
+                ? "Productivity demo — explore the look and feel; integrations are not wired up yet."
+                : "Welcome back! Here's your productivity overview"}
             </p>
           </motion.div>
 
@@ -922,6 +925,13 @@ export default function EnhancedHome() {
         >
           {/* Dashboard Stats */}
           <div className="mb-6">
+            {IS_DEMO_BUILD && (
+              <p
+                className={`mb-3 text-xs ${isDarkMode ? "text-blue-200/70" : "text-gray-500"}`}
+              >
+                Snapshot metrics are illustrative for this preview.
+              </p>
+            )}
             <DashboardStats />
           </div>
 
@@ -930,6 +940,11 @@ export default function EnhancedHome() {
             <h2 className={`text-xl font-semibold mb-3 ${isDarkMode ? "text-white" : "text-gray-800"}`}>
               Quick Actions
             </h2>
+            {IS_DEMO_BUILD && (
+              <p className={`mb-2 text-xs ${isDarkMode ? "text-blue-200/60" : "text-gray-500"}`}>
+                Shortcuts are visual only in the demo.
+              </p>
+            )}
             <QuickActions />
           </div>
 

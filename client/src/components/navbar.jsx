@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { LuMenuSquare } from "react-icons/lu"
 import { AiFillCloseSquare } from "react-icons/ai"
 import { RiHome4Line, RiTodoLine, RiMoneyDollarCircleLine, RiCalendarLine, RiArrowRightSLine } from "react-icons/ri"
+import { IS_DEMO_BUILD } from "../config.js"
 
 // Enhanced menu items with icons
 const menuItems = [
@@ -121,7 +122,7 @@ export default function Navbar() {
       {/* Animated Menu Button */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-4 left-4 z-50 p-3 rounded-full bg-gradient-to-br from-indigo-600 to-blue-900 text-white shadow-lg"
+        className={`fixed ${IS_DEMO_BUILD ? "top-[3.25rem]" : "top-4"} left-4 z-50 p-3 rounded-full bg-gradient-to-br from-indigo-600 to-blue-900 text-white shadow-lg`}
         whileHover={{
           scale: 1.1,
           boxShadow: "0 0 15px 2px rgba(79, 70, 229, 0.6)",
@@ -178,14 +179,21 @@ export default function Navbar() {
               <div className="flex flex-col h-full relative z-10">
                 {/* Header with futuristic styling */}
                 <div className="flex items-center justify-between h-24 px-6 border-b border-white/10">
-                  <motion.h1
-                    className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-400"
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2, duration: 0.5 }}
-                  >
-                    TAIROS
-                  </motion.h1>
+                  <div className="flex flex-col gap-1">
+                    <motion.h1
+                      className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-400"
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2, duration: 0.5 }}
+                    >
+                      TAIROS
+                    </motion.h1>
+                    {IS_DEMO_BUILD && (
+                      <span className="w-fit rounded-md bg-cyan-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-cyan-300 ring-1 ring-cyan-400/30">
+                        Demo build
+                      </span>
+                    )}
+                  </div>
 
                   {/* Futuristic digital clock */}
                   <motion.div
@@ -284,7 +292,9 @@ export default function Navbar() {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6 }}
                 >
-                  <div className="mb-2 font-mono">SYSTEM v2.4.7</div>
+                  <div className="mb-2 font-mono">
+                    {IS_DEMO_BUILD ? "DEMO PREVIEW · UI SAMPLE" : "SYSTEM v2.4.7"}
+                  </div>
                   <div className="flex justify-center space-x-1">
                     <div className="w-1 h-1 rounded-full bg-green-400 animate-pulse"></div>
                     <div

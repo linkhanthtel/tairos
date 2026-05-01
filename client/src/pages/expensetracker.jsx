@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect, useRef } from "react"
 import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion"
 import { GlobalContext } from "../context/globalState.jsx"
+import { IS_DEMO_BUILD } from "../config.js"
 import {
   FaPlus,
   FaTrash,
@@ -1602,7 +1603,7 @@ export default function EnhancedExpenseTracker() {
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
-        className="absolute top-4 right-4 p-2 bg-white bg-opacity-20 backdrop-filter backdrop-blur-sm rounded-full z-10"
+        className={`absolute ${IS_DEMO_BUILD ? "top-14" : "top-4"} right-4 p-2 bg-white bg-opacity-20 backdrop-filter backdrop-blur-sm rounded-full z-10`}
         onClick={cycleColorTheme}
       >
         <div
@@ -1677,7 +1678,12 @@ export default function EnhancedExpenseTracker() {
         transition={{ duration: 0.5 }}
         className="z-10 w-full max-w-6xl"
       >
-        <h1 className="text-3xl md:text-4xl font-bold mb-6 text-white text-center">Expense Tracker</h1>
+        <h1 className="text-3xl md:text-4xl font-bold mb-2 text-white text-center">Expense Tracker</h1>
+        {IS_DEMO_BUILD && (
+          <p className="mx-auto mb-6 max-w-xl text-center text-sm text-blue-100/80">
+            Demo balances and charts use seeded sample transactions; add rows to try the flow locally.
+          </p>
+        )}
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex justify-center mb-6">
