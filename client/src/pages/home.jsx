@@ -560,7 +560,7 @@ const QuickActions = () => {
   ]
 
   return (
-    <div className="flex space-x-2 overflow-x-auto pb-2 custom-scrollbar-x">
+    <div className="flex flex-wrap justify-center gap-2 overflow-x-auto pb-2 custom-scrollbar-x">
       {actions.map((action, index) => (
         <motion.button
           key={index}
@@ -586,7 +586,7 @@ const DashboardStats = () => {
   ]
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="mx-auto grid max-w-4xl grid-cols-2 gap-4 md:grid-cols-4">
       {stats.map((stat, index) => (
         <motion.div
           key={index}
@@ -808,20 +808,25 @@ export default function EnhancedHome() {
         ))}
       </div>
 
-      {/* Main Content Container - Adjusted for sidebar */}
-      <div className="ml-0 md:ml-72 min-h-screen">
-        {/* Header - Adjusted positioning */}
-        <header className="relative z-10 flex justify-between items-center p-6 pb-4">
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
-            <h1 className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-800"}`}>Dashboard</h1>
-            <p className={`${isDarkMode ? "text-blue-200" : "text-gray-600"}`}>
-              {IS_DEMO_BUILD
-                ? "Productivity demo — explore the look and feel; integrations are not wired up yet."
-                : "Welcome back! Here's your productivity overview"}
-            </p>
-          </motion.div>
+      {/* Main content: centered column (nav is overlay; no persistent side offset) */}
+      <div className="flex min-h-screen w-full justify-center">
+        <div className="w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+          <header className="relative z-10 flex flex-col items-center gap-5 p-6 pb-4 sm:flex-row sm:items-center sm:justify-between">
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="text-center sm:max-w-xl sm:text-left"
+            >
+              <h1 className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-800"}`}>Dashboard</h1>
+              <p className={`${isDarkMode ? "text-blue-200" : "text-gray-600"}`}>
+                {IS_DEMO_BUILD
+                  ? "Productivity demo — explore the look and feel; integrations are not wired up yet."
+                  : "Welcome back! Here's your productivity overview"}
+              </p>
+            </motion.div>
 
-          <div className="flex items-center space-x-3">
+          <div className="flex flex-shrink-0 items-center justify-center space-x-3 sm:justify-end">
             {/* Search */}
             <div className="relative">
               <AnimatePresence>
@@ -914,46 +919,45 @@ export default function EnhancedHome() {
               <FaRegUser />
             </motion.button>
           </div>
-        </header>
+          </header>
 
-        {/* Main Content - Adjusted padding */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="relative z-10 px-6 pb-6"
-        >
-          {/* Dashboard Stats */}
-          <div className="mb-6">
-            {IS_DEMO_BUILD && (
-              <p
-                className={`mb-3 text-xs ${isDarkMode ? "text-blue-200/70" : "text-gray-500"}`}
-              >
-                Snapshot metrics are illustrative for this preview.
-              </p>
-            )}
-            <DashboardStats />
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="relative z-10 pb-10"
+          >
+            {/* Dashboard Stats */}
+            <div className="mb-8">
+              {IS_DEMO_BUILD && (
+                <p
+                  className={`mb-3 text-center text-xs sm:text-left ${isDarkMode ? "text-blue-200/70" : "text-gray-500"}`}
+                >
+                  Snapshot metrics are illustrative for this preview.
+                </p>
+              )}
+              <DashboardStats />
+            </div>
 
-          {/* Quick Actions */}
-          <div className="mb-6">
-            <h2 className={`text-xl font-semibold mb-3 ${isDarkMode ? "text-white" : "text-gray-800"}`}>
-              Quick Actions
-            </h2>
-            {IS_DEMO_BUILD && (
-              <p className={`mb-2 text-xs ${isDarkMode ? "text-blue-200/60" : "text-gray-500"}`}>
-                Shortcuts are visual only in the demo.
-              </p>
-            )}
-            <QuickActions />
-          </div>
+            {/* Quick Actions */}
+            <div className="mb-8 text-center">
+              <h2 className={`text-xl font-semibold mb-3 ${isDarkMode ? "text-white" : "text-gray-800"}`}>
+                Quick Actions
+              </h2>
+              {IS_DEMO_BUILD && (
+                <p className={`mb-3 text-xs ${isDarkMode ? "text-blue-200/60" : "text-gray-500"}`}>
+                  Shortcuts are visual only in the demo.
+                </p>
+              )}
+              <QuickActions />
+            </div>
 
-          {/* Main Grid Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Main Grid Layout */}
+            <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 lg:grid-cols-3">
             {/* Left Column */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="space-y-6 lg:col-span-2">
               {/* Main Feature Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <Card3D
                   to="/todolists"
                   color={isDarkMode ? "bg-blue-700" : "bg-blue-600"}
@@ -981,34 +985,40 @@ export default function EnhancedHome() {
               <motion.div
                 className={`${
                   isDarkMode ? "bg-yellow-500 bg-opacity-20" : "bg-yellow-100"
-                } p-6 rounded-lg backdrop-filter backdrop-blur-sm border ${
+                } mx-auto max-w-3xl rounded-lg border p-6 backdrop-filter backdrop-blur-sm lg:mx-0 lg:max-w-none ${
                   isDarkMode ? "border-yellow-500 border-opacity-20" : "border-yellow-200"
                 }`}
-                initial={{ x: -1000 }}
-                animate={{ x: 0 }}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, type: "spring", stiffness: 70 }}
               >
-                <div className="flex items-center mb-4">
+                <div className="mb-4 flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:gap-3">
                   <div
-                    className={`w-10 h-10 rounded-full ${
+                    className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full ${
                       isDarkMode ? "bg-yellow-500 bg-opacity-30" : "bg-yellow-200"
-                    } flex items-center justify-center mr-3`}
+                    }`}
                   >
-                    <FaLightbulb className="text-yellow-500 text-xl" />
+                    <FaLightbulb className="text-xl text-yellow-500" />
                   </div>
                   <h3 className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-gray-800"}`}>
                     Productivity Tip
                   </h3>
                 </div>
-                <p className={`${isDarkMode ? "text-blue-100" : "text-gray-700"} mb-4`}>{tip}</p>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={generateTip}
-                  className="bg-yellow-500 text-white px-4 py-2 rounded-full font-semibold hover:bg-yellow-400 transition-colors duration-300 shadow-lg"
+                <p
+                  className={`mb-4 text-center sm:text-left ${isDarkMode ? "text-blue-100" : "text-gray-700"}`}
                 >
-                  New Tip
-                </motion.button>
+                  {tip}
+                </p>
+                <div className="flex justify-center sm:justify-start">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={generateTip}
+                    className="rounded-full bg-yellow-500 px-4 py-2 font-semibold text-white shadow-lg transition-colors duration-300 hover:bg-yellow-400"
+                  >
+                    New Tip
+                  </motion.button>
+                </div>
               </motion.div>
 
               {/* Recent Activity */}
@@ -1036,9 +1046,10 @@ export default function EnhancedHome() {
             </div>
           </div>
         </motion.div>
+        </div>
       </div>
 
-      {/* Quick Add Button - Adjusted position for sidebar */}
+      {/* Quick Add FAB */}
       <motion.div
         initial={{ opacity: 0, scale: 0 }}
         animate={{ opacity: 1, scale: 1 }}
