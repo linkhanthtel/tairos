@@ -29,6 +29,13 @@ yarn-error.log*
 # Environment Variables
 .env
 
+# FastAPI / SQLite / Python
+.venv/
+**/.venv/
+server/.venv/
+server/*.db
+server/.env
+
 # Build files
 dist/
 build/

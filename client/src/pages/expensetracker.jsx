@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect, useRef } from "react"
-import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion"
-import { GlobalContext } from "../context/globalState.jsx"
-import { IS_DEMO_BUILD } from "../config.js"
+import { motion, AnimatePresence } from "framer-motion"
+import { GlobalContext } from "../context/globalState"
+import { IS_DEMO_BUILD } from "../config"
 import {
   FaPlus,
   FaTrash,
@@ -15,8 +15,6 @@ import {
   FaSortAmountDown,
   FaTags,
   FaWallet,
-  FaCreditCard,
-  FaMoneyBillWave,
   FaShoppingBag,
   FaUtensils,
   FaHome,
@@ -275,250 +273,6 @@ const ParticleCanvas = ({ width, height, mousePosition, theme }) => {
   )
 }
 
-// 3D Transaction Card
-const TransactionCard = ({ transaction, onDelete, isSelected, onClick }) => {
-  const rotateY = useMotionValue(0)
-  const rotateX = useMotionValue(0)
-  const springRotateY = useSpring(rotateY, { stiffness: 100, damping: 10 })
-  const springRotateX = useSpring(rotateX, { stiffness: 100, damping: 10 })
-  const scale = useSpring(isSelected ? 1.05 : 1, { stiffness: 300, damping: 15 })
-
-  // Get category icon
-  const getCategoryIcon = () => {
-    if (!transaction.category) return <FaQuestion size={16} />
-
-    switch (transaction.category.toLowerCase()) {
-      case "food":
-        return <FaUtensils size={16} />
-      case "shopping":
-        return <FaShoppingBag size={16} />
-      case "housing":
-        return <FaHome size={16} />
-      case "transportation":
-        return <FaCar size={16} />
-      case "travel":
-        return <FaPlane size={16} />
-      case "technology":
-        return <FaLaptop size={16} />
-      case "income":
-        return <FaWallet size={16} />
-      default:
-        return <FaQuestion size={16} />
-    }
-  }
-
-  // Get payment method icon
-  const getPaymentIcon = () => {
-    if (!transaction.paymentMethod) return null
-
-    switch (transaction.paymentMethod.toLowerCase()) {
-      case "cash":
-        return <FaMoneyBillWave size={14} className="ml-1" />
-      case "credit":
-        return <FaCreditCard size={14} className="ml-1" />
-      case "bank":
-        return <FaWallet size={14} className="ml-1" />
-      default:
-        return null
-    }
-  }
-
-  // Hover effect
-  const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    const centerX = rect.left + rect.width / 2
-    const centerY = rect.top + rect.height / 2
-    const mouseX = e.clientX
-    const mouseY = e.clientY
-
-    const offsetX = ((mouseX - centerX) / (rect.width / 2)) * 10
-    const offsetY = ((mouseY - centerY) / (rect.height / 2)) * 10
-
-    rotateY.set(offsetX)
-    rotateX.set(-offsetY)
-  }
-
-  const handleMouseLeave = () => {
-    rotateY.set(0)
-    rotateX.set(0)
-  }
-
-  // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return ""
-    const date = new Date(dateString)
-    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" })
-  }
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, x: -100 }}
-      transition={{ duration: 0.3 }}
-      style={{
-        scale,
-        transformStyle: "preserve-3d",
-        perspective: 1000,
-      }}
-      onClick={onClick}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className={`bg-white bg-opacity-20 backdrop-filter backdrop-blur-sm rounded-lg mb-3 p-4 cursor-pointer ${
-        transaction.amount < 0 ? "border-l-4 border-red-500" : "border-l-4 border-green-500"
-      } ${isSelected ? "ring-2 ring-blue-400" : ""}`}
-    >
-      <motion.div
-        style={{
-          rotateY: springRotateY,
-          rotateX: springRotateX,
-          transformStyle: "preserve-3d",
-        }}
-        className="relative"
-      >
-        <div className="flex justify-between items-center">
-          <div className="flex items-center">
-            <div className="mr-3 p-2 rounded-full bg-white bg-opacity-20">{getCategoryIcon()}</div>
-            <div>
-              <div className="text-white font-medium">{transaction.text}</div>
-              <div className="text-xs text-gray-300 flex items-center">
-                {transaction.date && (
-                  <>
-                    <FaCalendarAlt size={10} className="mr-1" />
-                    {formatDate(transaction.date)}
-                  </>
-                )}
-                {transaction.paymentMethod && (
-                  <span className="ml-2 flex items-center">
-                    via {transaction.paymentMethod}
-                    {getPaymentIcon()}
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center">
-            <span className={`mr-4 font-bold ${transaction.amount < 0 ? "text-red-400" : "text-green-400"}`}>
-              {transaction.amount < 0 ? "-" : "+"}${Math.abs(transaction.amount).toFixed(2)}
-            </span>
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              className="bg-red-500 text-white p-2 rounded-full"
-              onClick={(e) => {
-                e.stopPropagation()
-                onDelete(transaction.id)
-              }}
-            >
-              <FaTrash size={14} />
-            </motion.button>
-          </div>
-        </div>
-
-        {/* Tags */}
-        {transaction.tags && transaction.tags.length > 0 && (
-          <div className="mt-2 flex flex-wrap">
-            {transaction.tags.map((tag, index) => (
-              <span
-                key={index}
-                className="text-xs bg-white bg-opacity-20 rounded-full px-2 py-1 mr-1 mb-1 flex items-center"
-              >
-                <FaTags size={8} className="mr-1" />
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
-
-        {/* 3D effect elements */}
-        <div
-          className="absolute inset-0 rounded-lg opacity-10"
-          style={{
-            background: "linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 100%)",
-            transform: "translateZ(1px)",
-          }}
-        />
-      </motion.div>
-    </motion.div>
-  )
-}
-
-// 3D Balance Card
-const BalanceCard = ({ title, amount, icon, color }) => {
-  const rotateY = useMotionValue(0)
-  const rotateX = useMotionValue(0)
-  const springRotateY = useSpring(rotateY, { stiffness: 100, damping: 10 })
-  const springRotateX = useSpring(rotateX, { stiffness: 100, damping: 10 })
-
-  // Hover effect
-  const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    const centerX = rect.left + rect.width / 2
-    const centerY = rect.top + rect.height / 2
-    const mouseX = e.clientX
-    const mouseY = e.clientY
-
-    const offsetX = ((mouseX - centerX) / (rect.width / 2)) * 15
-    const offsetY = ((mouseY - centerY) / (rect.height / 2)) * 15
-
-    rotateY.set(offsetX)
-    rotateX.set(-offsetY)
-  }
-
-  const handleMouseLeave = () => {
-    rotateY.set(0)
-    rotateX.set(0)
-  }
-
-  return (
-    <motion.div
-      className="bg-white bg-opacity-20 rounded-lg p-6 mb-6 cursor-pointer overflow-hidden"
-      whileHover={{ scale: 1.02 }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        transformStyle: "preserve-3d",
-        perspective: 1000,
-      }}
-    >
-      <motion.div
-        style={{
-          rotateY: springRotateY,
-          rotateX: springRotateX,
-          transformStyle: "preserve-3d",
-        }}
-      >
-        <div className="flex justify-between items-start">
-          <div>
-            <h3 className="text-xl font-semibold text-white mb-2">{title}</h3>
-            <h3 className={`text-3xl font-bold ${color}`}>${Number.parseFloat(amount).toFixed(2)}</h3>
-          </div>
-          <div className={`p-3 rounded-full ${color.replace("text-", "bg-")} bg-opacity-20`}>{icon}</div>
-        </div>
-
-        {/* 3D effect elements */}
-        <div
-          className="absolute inset-0 rounded-lg opacity-10"
-          style={{
-            background: "linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 100%)",
-            transform: "translateZ(2px)",
-          }}
-        />
-
-        {/* Decorative elements */}
-        <div
-          className="absolute -bottom-10 -right-10 w-40 h-40 rounded-full opacity-20"
-          style={{
-            background: `radial-gradient(circle, ${color.includes("green") ? "rgba(74,222,128,0.8)" : color.includes("red") ? "rgba(248,113,113,0.8)" : "rgba(96,165,250,0.8)"} 0%, rgba(0,0,0,0) 70%)`,
-            transform: "translateZ(1px)",
-          }}
-        />
-      </motion.div>
-    </motion.div>
-  )
-}
-
-// Replace the entire EnhancedExpenseTracker component with this new version
 export default function EnhancedExpenseTracker() {
   const { transaction, addTransaction, deleteTransaction } = useContext(GlobalContext)
   const [text, setText] = useState("")
@@ -789,7 +543,7 @@ export default function EnhancedExpenseTracker() {
       })
   }
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault()
 
     if (!text.trim()) {
@@ -797,20 +551,23 @@ export default function EnhancedExpenseTracker() {
       return
     }
 
-    const newTransaction = {
-      id: Math.floor(Math.random() * 100000000),
-      text,
-      amount: +amount,
-      date,
-      category,
-      paymentMethod,
-      tags: tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag),
+    try {
+      await addTransaction({
+        text,
+        amount: +amount,
+        date,
+        category,
+        paymentMethod,
+        tags: tags
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter((tag) => tag),
+      })
+    } catch (err) {
+      alert(`Could not save transaction: ${err.message}`)
+      return
     }
 
-    addTransaction(newTransaction)
     setText("")
     setAmount(0)
     setCategory("")
@@ -818,7 +575,6 @@ export default function EnhancedExpenseTracker() {
     setTags("")
     setDate(new Date().toISOString().split("T")[0])
 
-    // Close add transaction form on mobile
     if (windowSize.width < 768) {
       setShowAddTransaction(false)
     }
@@ -1271,9 +1027,13 @@ export default function EnhancedExpenseTracker() {
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
                           className="bg-red-500 text-white p-2 rounded-full"
-                          onClick={(e) => {
+                          onClick={async (e) => {
                             e.stopPropagation()
-                            deleteTransaction(t.id)
+                            try {
+                              await deleteTransaction(t.id)
+                            } catch (err) {
+                              alert(err.message)
+                            }
                           }}
                         >
                           <FaTrash size={14} />
@@ -1474,9 +1234,13 @@ export default function EnhancedExpenseTracker() {
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                       className="bg-red-500 text-white p-2 rounded-full"
-                      onClick={(e) => {
+                      onClick={async (e) => {
                         e.stopPropagation()
-                        deleteTransaction(t.id)
+                        try {
+                          await deleteTransaction(t.id)
+                        } catch (err) {
+                          alert(err.message)
+                        }
                       }}
                     >
                       <FaTrash size={14} />
@@ -1612,18 +1376,6 @@ export default function EnhancedExpenseTracker() {
           }`}
         />
       </motion.button>
-
-      {/* Mobile menu button */}
-      {/* <motion.button
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        className="md:hidden absolute top-4 right-4 p-2 bg-white bg-opacity-20 backdrop-filter backdrop-blur-sm rounded-full z-10"
-        onClick={() => setShowMobileMenu(!showMobileMenu)}
-      >
-        <div className="w-5 h-0.5 bg-white mb-1"></div>
-        <div className="w-5 h-0.5 bg-white mb-1"></div>
-        <div className="w-5 h-0.5 bg-white"></div>
-      </motion.button> */}
 
       {/* Mobile menu */}
       <AnimatePresence>

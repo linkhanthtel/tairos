@@ -525,12 +525,12 @@ const RecentActivity = ({ activities }) => {
 
 // Weather Widget Component
 const WeatherWidget = () => {
-  const [weather, setWeather] = useState({
+  const weather = {
     temp: 32,
     condition: "Sunny",
     location: "Singapore",
     icon: "☀️",
-  })
+  }
 
   return (
     <motion.div
@@ -617,7 +617,6 @@ export default function EnhancedHome() {
   const [showQuickInput, setShowQuickInput] = useState(false)
   const [quickInput, setQuickInput] = useState("")
   const [selectedDate, setSelectedDate] = useState(new Date())
-  const [activeTab, setActiveTab] = useState("dashboard")
   const [searchQuery, setSearchQuery] = useState("")
   const [isSearching, setIsSearching] = useState(false)
 
@@ -1119,8 +1118,8 @@ export default function EnhancedHome() {
         </AnimatePresence>
       </motion.div>
 
-      {/* Custom Scrollbar Styles */}
-      <style jsx global>{`
+      {/* Custom Scrollbar Styles (global WebKit scrollbar theming for this page) */}
+      <style>{`
         .custom-scrollbar::-webkit-scrollbar {
           width: 6px;
         }

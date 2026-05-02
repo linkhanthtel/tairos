@@ -1,4 +1,3 @@
-import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import ToDoLists from './pages/todolists'
 import Home from './pages/home'

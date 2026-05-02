@@ -12,7 +12,7 @@ class TransactionCreate(BaseModel):
     date: date
     category: str | None = None
     paymentMethod: str | None = None
-    tags: list[str] = []
+    tags: list[str] = Field(default_factory=list)
 
 
 class TransactionRead(BaseModel):
@@ -24,7 +24,7 @@ class TransactionRead(BaseModel):
     date: date
     category: str | None = None
     paymentMethod: str | None = None
-    tags: list[str] = []
+    tags: list[str] = Field(default_factory=list)
 
 
 def transaction_to_read(t: Any) -> TransactionRead:

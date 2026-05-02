@@ -4,7 +4,8 @@ import "react-big-calendar/lib/css/react-big-calendar.css"
 import { format, parse, startOfWeek, getDay, addMinutes, isSameDay } from "date-fns"
 import enUS from "date-fns/locale/en-US"
 import { motion, AnimatePresence, useAnimation, useMotionValue, useTransform, useSpring } from "framer-motion"
-import { IS_DEMO_BUILD } from "../config.js"
+import { IS_DEMO_BUILD } from "../config"
+import { apiGet, apiPost, apiPut, apiDelete } from "../lib/api"
 import {
   FaPlus,
   FaTrash,
@@ -897,75 +898,36 @@ const HolographicEventForm = ({ event, onClose, onSave, isEditing = false }) => 
 }
 
 // Main Calendar Component
+const mapEventFromApi = (e) => ({
+  ...e,
+  start: new Date(e.start),
+  end: new Date(e.end),
+})
+
 const Calendar = () => {
   const [events, setEvents] = useState([])
   const [modalType, setModalType] = useState(null) // "create", "view", "edit"
   const [selectedEvent, setSelectedEvent] = useState(null)
-  const [selectedDate, setSelectedDate] = useState(null)
   const [currentDate, setCurrentDate] = useState(new Date())
   const [currentView, setCurrentView] = useState("month")
   const [isDarkMode, setIsDarkMode] = useState(true)
 
-  // Generate some sample events on first render
   useEffect(() => {
-    const today = new Date()
-    const sampleEvents = [
-      {
-        id: "1",
-        title: "Team Sync Meeting",
-        description: "Weekly team sync to discuss project progress and roadblocks.",
-        start: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1, 10, 0),
-        end: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1, 11, 30),
-        color: "#06b6d4",
-        secondaryColor: "#22d3ee",
-        priority: "medium",
-      },
-      {
-        id: "2",
-        title: "Product Launch",
-        description: "Final preparation for the new feature release. Make sure all documentation is ready.",
-        start: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 3, 14, 0),
-        end: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 3, 16, 0),
-        color: "#ec4899",
-        secondaryColor: "#f472b6",
-        priority: "high",
-      },
-      {
-        id: "3",
-        title: "Client Call",
-        description: "Quarterly review with the client to discuss performance and future plans.",
-        start: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 2, 9, 0),
-        end: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 2, 10, 0),
-        color: "#10b981",
-        secondaryColor: "#34d399",
-        priority: "low",
-      },
-      {
-        id: "4",
-        title: "Design Review",
-        description: "Review the latest UI designs with the design team.",
-        start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 13, 0),
-        end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 14, 0),
-        color: "#8b5cf6",
-        secondaryColor: "#a78bfa",
-        priority: "medium",
-      },
-      {
-        id: "5",
-        title: "Tech Interview",
-        description: "Interview candidate for senior developer position.",
-        start: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2, 11, 0),
-        end: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2, 12, 0),
-        color: "#3b82f6",
-        secondaryColor: "#60a5fa",
-        priority: "high",
-      },
-    ]
-    setEvents(sampleEvents)
+    let cancelled = false
+    apiGet("/api/events")
+      .then((rows) => {
+        if (cancelled || !Array.isArray(rows)) return
+        setEvents(rows.map(mapEventFromApi))
+      })
+      .catch(() => {
+        if (!cancelled) setEvents([])
+      })
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   const handleSelectSlot = ({ start, end }) => {
-    setSelectedDate(start)
     setSelectedEvent({
       start,
       end: end || addMinutes(start, 60),
@@ -988,18 +950,48 @@ const Calendar = () => {
     setModalType("edit")
   }
 
-  const handleDeleteEvent = (event) => {
-    setEvents(events.filter((e) => e.id !== event.id))
-    setModalType(null)
+  const handleDeleteEvent = async (event) => {
+    try {
+      await apiDelete(`/api/events/${event.id}`)
+      setEvents((prev) => prev.filter((e) => e.id !== event.id))
+      setModalType(null)
+    } catch (err) {
+      alert(err.message)
+    }
   }
 
-  const handleSaveEvent = (event) => {
-    if (modalType === "edit") {
-      setEvents(events.map((e) => (e.id === event.id ? event : e)))
-    } else {
-      setEvents([...events, event])
+  const handleSaveEvent = async (event) => {
+    try {
+      if (modalType === "edit") {
+        const updated = await apiPut(`/api/events/${event.id}`, {
+          title: event.title,
+          description: event.description,
+          start: event.start,
+          end: event.end,
+          color: event.color,
+          secondaryColor: event.secondaryColor,
+          priority: event.priority,
+        })
+        const mapped = mapEventFromApi(updated)
+        setEvents((prev) => prev.map((e) => (e.id === mapped.id ? mapped : e)))
+      } else {
+        const created = await apiPost("/api/events", {
+          id: event.id,
+          title: event.title,
+          description: event.description,
+          start: event.start,
+          end: event.end,
+          color: event.color,
+          secondaryColor: event.secondaryColor,
+          priority: event.priority,
+        })
+        setEvents((prev) => [...prev, mapEventFromApi(created)])
+      }
+      setModalType(null)
+      setSelectedEvent(null)
+    } catch (err) {
+      alert(err.message)
     }
-    setModalType(null)
   }
 
   const handleNavigate = (action) => {
@@ -1050,7 +1042,7 @@ const Calendar = () => {
         color: "white",
       },
     }),
-    eventPropGetter: (event) => ({
+    eventPropGetter: () => ({
       style: {
         backgroundColor: "transparent",
         border: "none",

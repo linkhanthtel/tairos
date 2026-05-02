@@ -15,13 +15,15 @@ import {
   FaChevronUp,
   FaRegClock,
 } from "react-icons/fa"
-import { IS_DEMO_BUILD } from "../config.js"
+import { IS_DEMO_BUILD } from "../config"
+import { apiGet, apiPut } from "../lib/api"
 
 // Enhanced particle system with interactive effects
 const ParticleCanvas = ({ width, height, mousePosition }) => {
   const canvasRef = useRef(null)
   const particlesRef = useRef([])
   const mouseRef = useRef({ x: 0, y: 0 })
+  const rafRef = useRef(null)
 
   // Update mouse position reference
   useEffect(() => {
@@ -119,12 +121,14 @@ const ParticleCanvas = ({ width, height, mousePosition }) => {
         ctx.fill()
       })
 
-      requestAnimationFrame(animate)
+      rafRef.current = requestAnimationFrame(animate)
     }
 
-    const animationId = requestAnimationFrame(animate)
+    rafRef.current = requestAnimationFrame(animate)
 
-    return () => cancelAnimationFrame(animationId)
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    }
   }, [width, height])
 
   return (
@@ -505,6 +509,62 @@ const getNextColumn = (columnId) => {
   return columns[Math.min(columns.length - 1, currentIndex + 1)]
 }
 
+const DEFAULT_KANBAN_COLUMNS = {
+  todo: [
+    {
+      id: 1,
+      taskName: "Complete project proposal",
+      priority: "urgent",
+      complexity: "medium",
+      estimatedDays: 3,
+      createdAt: new Date().toISOString(),
+      progress: 0,
+    },
+    {
+      id: 2,
+      taskName: "Research new technologies",
+      priority: "normal",
+      complexity: "quick",
+      estimatedDays: 1,
+      createdAt: new Date().toISOString(),
+      progress: 0,
+    },
+  ],
+  inProgress: [
+    {
+      id: 3,
+      taskName: "Prepare presentation",
+      priority: "important",
+      complexity: "complex",
+      estimatedDays: 5,
+      createdAt: new Date().toISOString(),
+      progress: 30,
+    },
+  ],
+  review: [
+    {
+      id: 4,
+      taskName: "Review documentation",
+      priority: "normal",
+      complexity: "medium",
+      estimatedDays: 2,
+      createdAt: new Date().toISOString(),
+      progress: 80,
+    },
+  ],
+  done: [
+    {
+      id: 5,
+      taskName: "Schedule team meeting",
+      priority: "normal",
+      complexity: "quick",
+      estimatedDays: 1,
+      createdAt: new Date().toISOString(),
+      progress: 100,
+    },
+  ],
+}
+
 // Main Component
 export default function TrelloTodoList() {
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 })
@@ -513,74 +573,9 @@ export default function TrelloTodoList() {
   const [showFilters, setShowFilters] = useState(false)
   const [filterPriority, setFilterPriority] = useState("all")
   const [filterComplexity, setFilterComplexity] = useState("all")
-  const [isAnalyzing, setIsAnalyzing] = useState(false)
 
-  // Task state organized by columns
-  const [columns, setColumns] = useState(() => {
-    if (typeof window !== "undefined") {
-      const savedColumns = localStorage.getItem("trelloColumns")
-      if (savedColumns) {
-        return JSON.parse(savedColumns)
-      }
-    }
-
-    // Default columns with sample tasks
-    return {
-      todo: [
-        {
-          id: 1,
-          taskName: "Complete project proposal",
-          priority: "urgent",
-          complexity: "medium",
-          estimatedDays: 3,
-          createdAt: new Date().toISOString(),
-          progress: 0,
-        },
-        {
-          id: 2,
-          taskName: "Research new technologies",
-          priority: "normal",
-          complexity: "quick",
-          estimatedDays: 1,
-          createdAt: new Date().toISOString(),
-          progress: 0,
-        },
-      ],
-      inProgress: [
-        {
-          id: 3,
-          taskName: "Prepare presentation",
-          priority: "important",
-          complexity: "complex",
-          estimatedDays: 5,
-          createdAt: new Date().toISOString(),
-          progress: 30,
-        },
-      ],
-      review: [
-        {
-          id: 4,
-          taskName: "Review documentation",
-          priority: "normal",
-          complexity: "medium",
-          estimatedDays: 2,
-          createdAt: new Date().toISOString(),
-          progress: 80,
-        },
-      ],
-      done: [
-        {
-          id: 5,
-          taskName: "Schedule team meeting",
-          priority: "normal",
-          complexity: "quick",
-          estimatedDays: 1,
-          createdAt: new Date().toISOString(),
-          progress: 100,
-        },
-      ],
-    }
-  })
+  const [columns, setColumns] = useState(DEFAULT_KANBAN_COLUMNS)
+  const boardSyncedRef = useRef(false)
 
   // Update window size
   useEffect(() => {
@@ -611,21 +606,45 @@ export default function TrelloTodoList() {
     return () => window.removeEventListener("mousemove", handleMouseMove)
   }, [])
 
-  // Save columns to localStorage
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("trelloColumns", JSON.stringify(columns))
+    let cancelled = false
+    apiGet("/api/tasks/board")
+      .then((data) => {
+        if (cancelled || !data || typeof data !== "object") return
+        const next = {
+          todo: data.todo ?? [],
+          inProgress: data.inProgress ?? [],
+          review: data.review ?? [],
+          done: data.done ?? [],
+        }
+        const empty =
+          next.todo.length === 0 &&
+          next.inProgress.length === 0 &&
+          next.review.length === 0 &&
+          next.done.length === 0
+        setColumns(empty ? DEFAULT_KANBAN_COLUMNS : next)
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) boardSyncedRef.current = true
+      })
+    return () => {
+      cancelled = true
     }
+  }, [])
+
+  useEffect(() => {
+    if (!boardSyncedRef.current) return
+    const handle = setTimeout(() => {
+      apiPut("/api/tasks/board", columns).catch(() => {})
+    }, 450)
+    return () => clearTimeout(handle)
   }, [columns])
 
   // Simplified mock analysis function
   const analyzeTask = async (taskText) => {
-    setIsAnalyzing(true)
-
-    // Simulate API call delay
     await new Promise((resolve) => setTimeout(resolve, 600))
 
-    // Simple mock analysis based on text content
     const priority =
       taskText.includes("urgent") || taskText.includes("important") || taskText.includes("asap")
         ? "urgent"
@@ -637,7 +656,6 @@ export default function TrelloTodoList() {
 
     const estimatedDays = complexity === "quick" ? 1 : complexity === "medium" ? 3 : 7
 
-    setIsAnalyzing(false)
     return { priority, complexity, estimatedDays }
   }
 

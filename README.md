@@ -34,24 +34,50 @@ Tairos is a powerful and intuitive application designed to help you organize you
   - Responsive design for all devices
   - Data visualization with charts
 
+## Backend (FastAPI)
+
+Typical setup: use **`server/`** as the working directory for Python (see below). Use **Python 3.11+** (see `server/README.md`; 3.14 is supported with current dependency pins).
+
+```sh
+cd server
+python3.12 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+```
+
+**`No module named 'app'`** means the command was not run with `server/` as the working directory. Stay in `server/` after `cd server`, or from the repo root run:  
+`uvicorn app.main:app --reload --host 127.0.0.1 --port 8000 --app-dir server`.
+
+The Vite dev server proxies `/api` to `http://127.0.0.1:8000` (see `client/vite.config.js`). With both running, the expense tracker, task board, and calendar persist to SQLite (`server/tairos.db`).
+
+For production, set `VITE_API_URL` to your API origin if the client is not served from the same host.
+
 ## Getting Started
 
 To get a local copy up and running, follow these simple steps.
+
+### Frontend (dev)
+
+```sh
+cd client
+npm install
+npm run dev
+```
+
+Run the **FastAPI** server as above so `/api` routes work.
 
 ### Prerequisites
 
 - Node.js (v14.0.0 or later)
 - npm
 
-### Clone this project
-  ```sh
-  git clone https://github.com/linkhanthtel/tairos
-  ```
+### Clone and install
 
-  ```sh
-  npm install npm@latest -g
-  ```
+```sh
+git clone https://github.com/linkhanthtel/tairos
+cd tairos/client
+npm install
+npm run dev
+```
 
-  ```sh
-  npm run dev
-  ```
+Start the API from `server/` (see **Backend** above) in another terminal.
