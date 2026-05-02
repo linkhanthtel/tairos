@@ -4,7 +4,7 @@ REST API for transactions, kanban board, and calendar events. Uses **SQLite** (`
 
 ## Requirements
 
-- **Python 3.11, 3.12, or 3.13** (3.14 is not yet supported by `pydantic-core` wheels/builds in many environments)
+- **Python 3.11+** (3.14 supported with current pins)
 
 ## Run locally
 
@@ -15,6 +15,9 @@ source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
+
+If you see **`No module named 'app'`**, you are not in the `server/` directory (that folder must be on Python’s path). From the **repo root**, use  
+`uvicorn app.main:app --reload --host 127.0.0.1 --port 8000 --app-dir server`.
 
 - OpenAPI docs: http://127.0.0.1:8000/docs  
 - Health: `GET http://127.0.0.1:8000/api/health`
